@@ -2,6 +2,8 @@
 
 ---
 
+[TOC]
+
 ## 1. @Configuration
 
 ​	`@Configuration` //配置注解类似 applicationcontext.xml 只是将xml配置改为 注解方式进行
