@@ -2,7 +2,7 @@
 
 ---
 
-[TOC]
+[markdown-toc]
 
 
 
