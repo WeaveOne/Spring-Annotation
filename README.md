@@ -115,12 +115,6 @@ public class CustomTypeFilter implements TypeFilter {
 
   **以上5个一般只用第一个和第二个**
 
-### @Lazy
-
-​	懒加载。当Scope为单例模式时，当容器被初始化时就会被实例化。
-
-​	当有@Lazy时，在容器初始化时不会被实例化，在获取实例时才会被初始化
-
 原型模式使用：
 
 ```java
@@ -140,6 +134,12 @@ public class CustomTypeFilter implements TypeFilter {
 		//返回true说明为单例
 		System.out.println(person==person1);
 ```
+
+### @Lazy
+
+​	懒加载。当Scope为单例模式时，当容器被初始化时就会被实例化。
+
+​	当有@Lazy时，在容器初始化时不会被实例化，在获取实例时才会被初始化
 
 单例模式懒加载使用
 
