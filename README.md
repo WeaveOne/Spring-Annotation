@@ -9,6 +9,8 @@
   - [includeFIlters](#includefilters)
   - [使用自定义TypeFilter](#使用自定义typefilter)
 - [@Bean](#3-bean)
+  - [Scope](#scope)
+  - [Lazy](#lazy)
 
 ## 1. @Configuration
 
