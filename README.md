@@ -5,6 +5,9 @@
 - [@Configuration](#1-configuration)
 - [@ComponentScan](#2-componentscan)
   - [FilterType](#filtertype)
+  - [excludeFilters](#excludefilters)
+  - [includeFIlters](#includefilters)
+  - [使用自定义TypeFilter](#使用自定义typefilter)
 - [@Bean](#3-bean)
 
 ## 1. @Configuration
@@ -39,7 +42,7 @@
 })
 ```
 
-### includeFIlters
+### includeFilters
 
 ​	includeFIlters = Filter[]  根据规则只包含哪些组件（**ps：useDefaultFilters设置为false**）
 
