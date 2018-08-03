@@ -2,9 +2,9 @@
 
 ---
 
-[markdown-toc]
-
-
+- [@Configuration](#1. @Configuration)
+- [@ComponentScan](#2. @ComponentScan)
+  - [FilterType](##FilterType)
 
 ## 1. @Configuration
 
