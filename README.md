@@ -2,10 +2,10 @@
 
 ---
 
-- [@Configuration](#1-Configuration)
-- [@ComponentScan](#2-ComponentScan)
-  - [FilterType](#FilterType)
-- [@Bean](#3-Bean)
+- [@Configuration](#1-configuration)
+- [@ComponentScan](#2-componentscan)
+  - [FilterType](#filtertype)
+- [@Bean](#3-bean)
 
 ## 1. @Configuration
 
