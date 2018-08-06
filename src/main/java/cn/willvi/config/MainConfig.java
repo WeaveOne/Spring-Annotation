@@ -11,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,11 @@ import cn.willvi.conditional.WindowConditional;
 import cn.willvi.controller.PersonController;
 import cn.willvi.typefilter.CustomTypeFilter;
 
-
+/**
+ * @Bean @Scope @Lazy注解运用
+ * @author willvi
+ *
+ */
 @Configuration //配置注解类似 applicationcontext.xml
 public class MainConfig {
 	@Bean

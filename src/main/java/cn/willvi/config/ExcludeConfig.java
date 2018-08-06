@@ -18,7 +18,11 @@ import cn.willvi.conditional.WindowConditional;
 import cn.willvi.controller.PersonController;
 import cn.willvi.typefilter.CustomTypeFilter;
 
-
+/**
+ * @ComponentScan之 excludeFilters条件 注解运用
+ * @author willvi
+ *
+ */
 @Configuration //配置注解类似 applicationcontext.xml
 //excludeFilters = Filter[] 根据规则排除哪些组件
 /*@Filter type 包含 

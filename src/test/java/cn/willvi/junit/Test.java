@@ -23,7 +23,7 @@ public class Test {
 	}
 	
 	/**
-	 * 验证@scope的单例和非单例情况
+	 * 验证@scope 单例和非单例情况
 	 */
 	@org.junit.Test
 	public void test02() {

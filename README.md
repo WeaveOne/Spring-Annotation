@@ -1,7 +1,3 @@
-# Spring注解开发-全面解析常用注解使用方法
-
----
-
 - [@Configuration](#1-configuration)
 - [@ComponentScan](#2-componentscan)
   - [FilterType](#filtertype)
@@ -11,6 +7,8 @@
 - [@Bean](#3-bean)
   - [Scope](#scope)
   - [Lazy](#lazy)
+
+本文github位置:<https://github.com/WillVi/Spring-Annotation/>
 
 ## 1. @Configuration
 
@@ -171,3 +169,180 @@ public class CustomTypeFilter implements TypeFilter {
 	Person person = (Person) ioc.getBean("personScope");
 ```
 
+
+
+## 4. Conditional
+
+​	根据自定义条件注册组件。需要实现`Condition`接口
+
+接口实现例子：
+
+```java
+package cn.willvi.conditional;
+
+import java.util.LinkedList;
+
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.annotation.Condition;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.core.env.Environment;
+import org.springframework.core.type.AnnotatedTypeMetadata;
+
+public class LinuxConditional implements Condition{
+	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+		//获取环境
+		Environment environment = context.getEnvironment();
+        //获取组件注册类
+		BeanDefinitionRegistry registry = context.getRegistry();
+       //判断容器是否包含注册“person02”注册类
+		boolean containsBeanDefinition = registry.containsBeanDefinition("person02");
+       //获取当前操作系统并判断是否为Linux是的话 返回true；
+      //返回true表示满足条件，ioc容器会注册该bean。反之则不会
+		String property = environment.getProperty("os.name");
+		if(property.contains("Linux")) {
+			return true;
+		}
+		return false;
+	}
+}
+```
+
+运用：
+
+```java
+    //根据自定义条件进行注测
+    //给定自定义的class
+	@Conditional({WindowConditional.class})
+	@Bean
+	public Person person01() {
+		return new Person("windows",11);
+	}
+	@Conditional({LinuxConditional.class})
+	@Bean
+	public Person person02() {
+		return new Person("linux",11);
+	}
+----------------------------------------------------------
+    //也可以直接写在类前面
+    //表示类中统一满足该条件才会被注册
+	@Configuration
+    @Conditional({WindowConditional.class})
+  public mainConfig(){
+  ....
+	}
+```
+
+## 5. @Import
+
+ 1.  直接通过`@Import({Dog.class,Pig.class})`
+
+	2. 实现ImportSelector接口 @Import({Dog.class,ImportSelector.class})
+
+    ```java
+    package cn.willvi.selector;
+
+    import org.springframework.context.annotation.ImportSelector;
+    import org.springframework.core.type.AnnotationMetadata;
+
+    /**
+     * ImportSelector @Import注解其中之一 选择器例子
+     * @author willvi
+     *
+     */
+    public class AnnoImportSelector implements ImportSelector{
+
+    	/**
+    	 * AnnotationMetadata获取当前类的注解信息
+    	 */
+    	public String[] selectImports(AnnotationMetadata importingClassMetadata) {
+    		//需要返回全类名
+    		String [] beans = {"cn.willvi.bean.Pig"};
+    		return beans;
+    	}
+
+    }
+    ```
+
+	3. 实现ImportBeanDefinitionRegistrar实现手工注册组件 @Import({Dog.class,AnnoImportBeanDefinitionRegistrar.class})
+
+    ```java
+    package cn.willvi.selector;
+
+    import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+    import org.springframework.beans.factory.support.RootBeanDefinition;
+    import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+    import org.springframework.core.type.AnnotationMetadata;
+
+    import cn.willvi.bean.Person;
+
+    /**
+     * 
+     * ImportBeanDefinitionRegistrar接口实现
+     * @author willvi
+     *
+     */
+    public class AnnoImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar{
+
+    	/**
+    	 * AnnotationMetadata获取当前类的注解信息
+    	 * BeanDefinitionRegistry 注册类 可以手工注册组件
+    	 */
+    	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+    		RootBeanDefinition rootBeanDefinition = new RootBeanDefinition(Person.class);
+    		//参数为：bean id名 bean定义信息
+    		registry.registerBeanDefinition("person", rootBeanDefinition);
+    		
+    	}
+
+    }
+    ```
+
+    使用：
+
+    ```java
+    package cn.willvi.config;
+
+    import org.springframework.context.ApplicationContext;
+    import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.context.annotation.Import;
+
+    import cn.willvi.bean.Dog;
+    import cn.willvi.bean.Pig;
+    import cn.willvi.selector.AnnoImportBeanDefinitionRegistrar;
+    import cn.willvi.selector.AnnoImportSelector;
+
+    /**
+     * @Import注解的运用
+     * @author willvi
+     *
+     */
+    @Configuration
+    //快速导入到容器内 输入的组件名称为全类名
+    //通过实现ImportSelector接口
+    //通过实现ImportBeanDefinitionRegistrar手工注册
+    @Import({Dog.class,AnnoImportSelector.class,AnnoImportBeanDefinitionRegistrar.class})
+
+    public class AnnoImportConfig {
+
+    	public static void main(String[] args) {
+    		ApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(AnnoImportConfig.class);
+    		String[] beanNames = annotationConfigApplicationContext.getBeanDefinitionNames();
+    		for (String bean : beanNames) {
+    			System.out.println(bean);
+    		}
+    	}
+    }
+
+    ```
+
+## 小结
+
+​	给容器注册组件的几种方式：
+
+1. 包扫描配合注解（`@Controller\@Service\@Repository\@Component）[自己写的类]
+2. @Bean 导入第三方包的组件
+3. @Import
+   - 直接通过 @Import({Dog.class,Pig.class})
+   - 通过实现ImportSelector接口返回全类名数组 @Import({实现的类})
+   - 通过实现ImportBeanDefinitionRegistrar接口手工注册组件 @Import({实现的类})

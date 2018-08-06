@@ -17,7 +17,11 @@ import cn.willvi.conditional.LinuxConditional;
 import cn.willvi.conditional.WindowConditional;
 import cn.willvi.controller.PersonController;
 import cn.willvi.typefilter.CustomTypeFilter;
-
+/**
+ * @ComponentScan之 includeFilters 条件 注解运用
+ * @author willvi
+ *
+ */
 
 @Configuration //配置注解类似 applicationcontext.xml
 //includeFilters = Filter[] 根据规则只包含哪些组件（ps：useDefaultFilters设置为false）
