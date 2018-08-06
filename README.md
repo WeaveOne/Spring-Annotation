@@ -336,6 +336,72 @@ public class LinuxConditional implements Condition{
 
     ```
 
+## 6. 通过实现FactoryBean注册组件
+
+​	通过实现FactoryBean接口（工厂bean）通常用于整合第三方框架
+
+接口实现：
+
+```java
+package cn.willvi.bean;
+
+import org.springframework.beans.factory.FactoryBean;
+
+public class MyFactoryBean implements FactoryBean<Pig>{
+
+	public Pig getObject() throws Exception {
+		return new Pig();
+	}
+
+	public Class<?> getObjectType() {
+		return Pig.class;
+	}
+
+	//是否单例
+	public boolean isSingleton() {
+		return true;
+	}
+
+}
+```
+
+使用：
+
+```java
+package cn.willvi.config;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import cn.willvi.bean.MyFactoryBean;
+import cn.willvi.bean.Pig;
+
+/**
+ * 通过FactoryBean的实现注册
+ * @author willvi
+ *
+ */
+@Configuration
+public class FactoryBeanConfig {
+
+	@Bean
+	public MyFactoryBean MyFactoryBean() {
+		return new MyFactoryBean();
+	}
+	
+	public static void main(String[] args) {
+		ApplicationContext  applicationContext= new AnnotationConfigApplicationContext(FactoryBeanConfig.class);
+		//获取的是MyFactoryBean中getObject()返回的实例
+		System.out.println(applicationContext.getBean("MyFactoryBean"));
+		//添加'&' 获取的是MyFactoryBean实例
+		System.out.println(applicationContext.getBean("&MyFactoryBean"));
+	}
+}
+
+```
+
 ## 小结
 
 ​	给容器注册组件的几种方式：
@@ -346,3 +412,6 @@ public class LinuxConditional implements Condition{
    - 直接通过 @Import({Dog.class,Pig.class})
    - 通过实现ImportSelector接口返回全类名数组 @Import({实现的类})
    - 通过实现ImportBeanDefinitionRegistrar接口手工注册组件 @Import({实现的类})
+4. 通过实现FactoryBean接口（工厂bean）通常用于整合第三方框架
+   - 默认获取到的是FactoryBean的getObject()返回的对象
+   - 要获取当前工厂类对象需 添加 `&`符号
